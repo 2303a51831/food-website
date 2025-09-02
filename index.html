@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brussels Multicuisine Restaurant</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #c45b0a, #ffffff); }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .logo { font-size: 2rem; font-weight: bold; color: #FF5733; }
+    nav a { margin-left: 20px; text-decoration: none; font-size: 1.1rem; color: black; padding: 10px; transition: background-color 0.3s; }
+    nav a:hover { background-color: #ffefdb; border-radius: 5px; }
+    .cart-btn { background: #ff5733; color: white; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+    .hero-section { display: flex; justify-content: space-between; align-items: center; padding: 50px; min-height: 70vh; }
+    .hero-text { flex: 1; animation: fadeIn 1s ease-in; }
+    .hero-text h1 { font-size: 3rem; color: #333; margin-bottom: 20px; }
+    .hero-text p { font-size: 1.1rem; color: #555; margin-bottom: 30px; }
+    .hero-image img { max-width: 100%; border-radius: 15px; animation: fadeIn 1.5s ease-in; height: 10cm; width: 15cm; }
+    .search-container { text-align: center; margin: 20px; }
+    .search-bar { padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; }
+    .menu-container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+    .buttonsd { width: 75%; margin: 0 auto; border: 3px solid turquoise; padding: 5px; background-color: #fdfdfd; border-radius: 30px; margin-bottom: 20px; }
+    .menu-buttons { text-align: center; }
+    .menu-buttons a { padding: 10px 20px; background-color: #820202; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px; transition: 0.2s; display: inline-block; }
+    .menu-buttons a:hover { transform: scale(1.05); background-color: red; }
+    .menu-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+    .menu-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgb(0,0,0); text-align: center; transition: 0.3s; width: 300px; height: 450px; }
+    .menu-card h2 { font-size: 1.5rem; color: #FF5733; margin-bottom: 15px; }
+    .menu-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+    .menu-card p { font-size: 1.1rem; color: #767474; margin-bottom: 5px; }
+    .menu-card small { display: block; margin-bottom: 10px; font-size: 0.9rem; color: #6d6b6b; }
+    .menu-card:hover { transform: translateY(-10px); background-color: #868686; }
+    .order-now { padding: 10px 15px; background: #ab790e; color: white; text-decoration: none; border-radius: 5px; cursor: pointer; border: none; }
+    .order-now:hover { background: rgb(151, 90, 17); }
+    footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9rem; }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+    /* Cart */
+    .cart-modal { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.2); padding: 20px; transition: 0.4s; overflow-y: auto; z-index: 1000; }
+    .cart-modal.active { right: 0; }
+    .cart-modal h2 { margin-bottom: 20px; color: #ff5733; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+    .cart-total { font-size: 1.3rem; margin-top: 20px; font-weight: bold; }
+    .checkout-btn { display: block; margin-top: 20px; width: 100%; padding: 12px; background: #28a745; color: white; border-radius: 5px; font-size: 16px; text-align: center; cursor: pointer; border: none; }
+    .checkout-btn:hover { background: #218838; }
+
+    /* Payment */
+    .payment-screen { display: none; text-align: center; margin: 50px auto; max-width: 500px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .payment-screen h2 { margin-bottom: 20px; color: #28a745; }
+    
+    .close-cart { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Brussels</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Menu</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact Us</a>
+      <a href="#" class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+  
+  <section class="hero-section">
+    <div class="hero-text">
+      <h1>Delicious food Delivered at your Doorstep.</h1>
+      <p>Have your favourite and delicious food in home by ordering in Bruzzle.</p>
+    </div>
+    <div class="hero-image">
+      <img src="https://assets.architecturaldigest.in/photos/60084f39f93542952b665f27/master/w_1600%2Cc_limit/Mumbai-restaurant-COVID-19-2.jpg" alt="Food Image">
+    </div>
+  </section>
+
+  <div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search for dishes...">
+  </div>
+
+  <div class="menu-container">
+    <div class="buttonsd">
+      <div class="menu-buttons">
+        <a href="#">Veg Soft Noodles</a>
+        <a href="#">Steamed Momos</a>
+        <a href="#">Jeera Rice</a>
+        <a href="#">Murgh Curry(Boneless)</a>
+        <a href="#">Chocolate soufflé</a>
+        <a href="#">Manda Roti</a>
+      </div>
+    </div>
+
+    <!-- Menu Cards -->
+    <section class="menu-cards">
+      <div class="menu-card">
+        <h2>Veg Soft Noodles</h2>
+        <img src="https://www.indianhealthyrecipes.com/wp-content/uploads/2016/05/veg-noodles-recipe-05.webp">
+        <p>₹160</p>
+        <small>Chinese-inspired noodles stir-fried with veggies.</small>
+        <button class="order-now" onclick="addToCart('Veg Soft Noodles',160)">Add to Cart</button>
+      </div>
+      <div class="menu-card">
+        <h2>Steamed Momos</h2>
+        <img src="https://img-global.cpcdn.com/recipes/4a26e7be58aa5511/680x482cq70/steamed-paneer-tikka-momos-recipe-main-photo.jpg">
+        <p>₹90</p>
+        <small>Soft dough wrapper filled with veggies stuffing.</small>
+        <button class="order-now" onclick="addToCart('Steamed Momos',90)">Add to Cart</button>
+      </div>
+      <div class="menu-card">
+        <h2>Jeera Rice</h2>
+        <img src="https://www.yummytummyaarthi.com/wp-content/uploads/2014/12/1-36.jpg">
+        <p>₹160</p>
+        <small>Fragrant cumin-flavored rice.</small>
+        <button class="order-now" onclick="addToCart('Jeera Rice',160)">Add to Cart</button>
+      </div>
+      <div class="menu-card">
+        <h2>Murgh Curry(Boneless)</h2>
+        <img src="https://sukkur.co.uk/wp-content/uploads/2020/11/Boneless-Chicken-Curry.jpg">
+        <p>₹300</p>
+        <small>Chicken curry with aromatic spices.</small>
+        <button class="order-now" onclick="addToCart('Murgh Curry',300)">Add to Cart</button>
+      </div>
+      <div class="menu-card">
+        <h2>Chocolate soufflé</h2>
+        <img src="https://media.cnn.com/api/v1/images/stellar/prod/220527110242-17-classic-french-dishes-souffl-au-chocolat.jpg?q=w_1110,c_fill/f_webp">
+        <p>₹130</p>
+        <small>Classic French dessert with rich chocolate flavor.</small>
+        <button class="order-now" onclick="addToCart('Chocolate soufflé',130)">Add to Cart</button>
+      </div>
+      <div class="menu-card">
+        <h2>Manda Roti</h2>
+        <img src="https://www.cookwithkushi.com/wp-content/uploads/2016/10/rumali_roti_roomali_roti_recipe.jpg">
+        <p>₹40</p>
+        <small>Ultra-thin, soft, handkerchief-like roti.</small>
+        <button class="order-now" onclick="addToCart('Manda Roti',40)">Add to Cart</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-modal" id="cart">
+    <button class="close-cart" onclick="toggleCart()">×</button>
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div class="cart-total" id="cart-total">Total: ₹0</div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Payment</button>
+  </div>
+
+  <!-- Payment Screen -->
+  <div class="payment-screen" id="payment-screen">
+    <h2>✅ Payment Successful!</h2>
+    <p>Thank you for ordering from Brussels Restaurant. Your food is on the way! 🚴‍♂️</p>
+    <button onclick="closePayment()" style="margin-top: 20px; padding: 10px 20px; background: #ff5733; color: white; border: none; border-radius: 5px; cursor: pointer;">Continue Shopping</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Brussels Multicuisine Restaurant. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    let cart = [];
+    
+    function addToCart(name, price) {
+      let item = cart.find(i => i.name === name);
+      if (item) { 
+        item.qty++; 
+      } else { 
+        cart.push({ name, price, qty: 1 }); 
+      }
+      updateCartCount();
+      renderCart();
+      
+      // Visual feedback
+      event.target.style.background = '#28a745';
+      event.target.textContent = 'Added!';
+      setTimeout(() => {
+        event.target.style.background = '#ab790e';
+        event.target.textContent = 'Add to Cart';
+      }, 1000);
+    }
+
+    function updateCartCount() {
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById("cart-count").innerText = totalItems;
+    }
+
+    function renderCart() {
+      let cartItemsDiv = document.getElementById("cart-items");
+      let total = 0;
+      cartItemsDiv.innerHTML = "";
+      
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty</p>";
+        document.getElementById("cart-total").innerText = "Total: ₹0";
+        return;
+      }
+      
+      cart.forEach((item, index) => {
+        total += item.price * item.qty;
+        cartItemsDiv.innerHTML += `
+          <div class="cart-item">
+            <div>
+              <div>${item.name}</div>
+              <small>₹${item.price} x ${item.qty}</small>
+            </div>
+            <div>
+              <span>₹${item.price * item.qty}</span>
+              <button onclick="removeFromCart(${index})" style="margin-left: 10px; color: red; border: none; background: none; cursor: pointer;">×</button>
+            </div>
+          </div>`;
+      });
+      document.getElementById("cart-total").innerText = "Total: ₹" + total;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCart();
+    }
+
+    function toggleCart() {
+      document.getElementById("cart").classList.toggle("active");
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+      
+      document.getElementById("cart").classList.remove("active");
+      document.getElementById("payment-screen").style.display = "block";
+      cart = []; 
+      updateCartCount();
+      renderCart();
+    }
+    
+    function closePayment() {
+      document.getElementById("payment-screen").style.display = "none";
+    }
+
+    // Close cart when clicking outside
+    document.addEventListener('click', function(e) {
+      const cart = document.getElementById('cart');
+      const cartBtn = document.querySelector('.cart-btn');
+      if (!cart.contains(e.target) && !cartBtn.contains(e.target) && cart.classList.contains('active')) {
+        cart.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
